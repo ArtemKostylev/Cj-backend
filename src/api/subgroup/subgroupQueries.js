@@ -1,4 +1,4 @@
-const { buildGroups } = require('../../utils');
+const { buildGroups } = require("../../utils");
 
 const fetchSubgroups = async (parent, args, context) => {
   const { userId } = context;
@@ -6,10 +6,11 @@ const fetchSubgroups = async (parent, args, context) => {
     where: {
       teacherId: args.teacherId,
       courseId: args.courseId,
+      FreezeVersion: null
     },
     include: {
-      student: true,
-    },
+      student: true
+    }
   });
 
   let groups = [];
@@ -31,7 +32,7 @@ const fetchSubgroups = async (parent, args, context) => {
       groups.push({
         class: num,
         program: program,
-        relations: [],
+        relations: []
       });
     });
   });
@@ -53,5 +54,5 @@ const fetchSubgroups = async (parent, args, context) => {
 };
 
 module.exports = {
-  fetchSubgroups,
+  fetchSubgroups
 };

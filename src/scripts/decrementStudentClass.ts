@@ -11,4 +11,4 @@ prisma.student.updateMany({
       increment: 1
     }
   }
-}).then(res => console.log(res));
+}).then((res: any) => console.log(res));

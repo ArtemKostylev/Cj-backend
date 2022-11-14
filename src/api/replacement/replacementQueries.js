@@ -4,30 +4,33 @@ const fetchReplacements = async (parent, args, context) => {
     where: {
       teacherId: args.teacherId,
       courseId: args.courseId,
+      FreezeVersion: args.year ? {
+        year: args.year
+      } : null
     },
     include: {
       journalEntry: {
         orderBy: {
-          date: "asc",
+          date: "asc"
         },
         where: {
           date: {
             gte: args.date_gte,
-            lte: args.date_lte,
+            lte: args.date_lte
           },
           mark: {
-            in: ["Б"],
-          },
+            in: ["Б"]
+          }
         },
         include: {
-          replacement: true,
-        },
+          replacement: true
+        }
       },
-      student: true,
-    },
+      student: true
+    }
   });
 };
 
 module.exports = {
   fetchReplacements
-}
+};

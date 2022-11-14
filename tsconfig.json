@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "allowJs": true,
+    "strict": true,
+    "lib": [
+      "esnext"
+    ],
+    "esModuleInterop": true
+  }
+}

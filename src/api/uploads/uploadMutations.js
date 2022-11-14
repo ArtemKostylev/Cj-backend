@@ -5,18 +5,22 @@ const uploadTeachersFromFile = async (_, args, context, info) => {
 
   const rl = readline.createInterface({
     input: stream,
-    crlfDelay: Infinity,
+    crlfDelay: Infinity
   });
 
   let lines = [];
 
   for await (const line of rl) {
-    const data = line.split(' ');
-    if (data.length !== 3) throw new Error('Invalid file format');
+    const data = line.split(" ");
+    if (data.length !== 3) throw new Error("Invalid file format");
     lines.push(data);
   }
 
-  const currentEntries = await context.prisma.teacher.findMany();
+  const currentEntries = await context.prisma.teacher.findMany({
+    where: {
+      FreezeVersion: null
+    }
+  });
 
   const created = lines.map(async (entry) => {
     if (
@@ -32,8 +36,8 @@ const uploadTeachersFromFile = async (_, args, context, info) => {
         data: {
           name: entry[1],
           surname: entry[0],
-          parent: entry[2] || '',
-        },
+          parent: entry[2] || ""
+        }
       });
     }
   });
@@ -48,26 +52,30 @@ const uploadCoursesFromFile = async (_, args, context, info) => {
 
   const rl = readline.createInterface({
     input: stream,
-    crlfDelay: Infinity,
+    crlfDelay: Infinity
   });
 
   let lines = [];
 
   for await (const line of rl) {
-    const data = line.split(' ');
-    if (data.length !== 2) throw new Error('Invalid file format');
+    const data = line.split(" ");
+    if (data.length !== 2) throw new Error("Invalid file format");
     lines.push(data);
   }
 
-  const currentEntries = await context.prisma.course.findMany();
+  const currentEntries = await context.prisma.course.findMany({
+    where: {
+      FreezeVersion: null
+    }
+  });
 
   lines.map(async (entry) => {
     if (-1 === currentEntries.findIndex((item) => item.name === entry[0])) {
       await context.prisma.course.create({
         data: {
           name: entry[0],
-          group: entry[1] === '+' ? true : false,
-        },
+          group: entry[1] === "+" ? true : false
+        }
       });
     }
   });
@@ -82,18 +90,22 @@ const uploadStudentsFromFile = async (_, args, context, info) => {
 
   const rl = readline.createInterface({
     input: stream,
-    crlfDelay: Infinity,
+    crlfDelay: Infinity
   });
 
   let lines = [];
 
   for await (const line of rl) {
-    const data = line.split(' ');
-    if (data.length !== 4) throw new Error('Invalid file format');
+    const data = line.split(" ");
+    if (data.length !== 4) throw new Error("Invalid file format");
     lines.push(data);
   }
 
-  const currentEntries = await context.prisma.student.findMany();
+  const currentEntries = await context.prisma.student.findMany({
+    where: {
+      FreezeVersion: null
+    }
+  });
 
   const created = lines.map(async (entry) => {
     if (
@@ -107,8 +119,8 @@ const uploadStudentsFromFile = async (_, args, context, info) => {
           name: entry[1],
           surname: entry[0],
           class: parseInt(entry[2]),
-          program: entry[3],
-        },
+          program: entry[3]
+        }
       });
     }
   });
@@ -119,5 +131,5 @@ const uploadStudentsFromFile = async (_, args, context, info) => {
 module.exports = {
   uploadTeachersFromFile,
   uploadStudentsFromFile,
-  uploadCoursesFromFile,
+  uploadCoursesFromFile
 };

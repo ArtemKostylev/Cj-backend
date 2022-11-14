@@ -35,10 +35,10 @@ const uploadSpecializations = async () => {
     });
 
     studentsMap.forEach(async (value, key) => {
-      const spec = await prisma.specialization.findFirst({
+      let spec = await prisma.specialization.findFirst({
         where: {
-          name: key,
-        },
+          name: key
+        }
       });
 
       console.log(spec);
@@ -46,8 +46,8 @@ const uploadSpecializations = async () => {
       if (!spec) {
         spec = await prisma.specialization.create({
           data: {
-            name: key,
-          },
+            name: key
+          }
         });
       }
 
@@ -55,11 +55,11 @@ const uploadSpecializations = async () => {
         await prisma.student.updateMany({
           where: {
             name: it.split(" ")[1],
-            surname: it.split(" ")[0],
+            surname: it.split(" ")[0]
           },
           data: {
-            specializationId: spec.id,
-          },
+            specializationId: spec.id
+          }
         });
       });
     });

@@ -7,16 +7,19 @@ const fetchGroupConsults = async (parent, args, context) => {
         teacherId: args.teacherId,
         courseId: args.courseId,
         archived: false,
+        FreezeVersion: args.year ? {
+          year: args.year
+        } : null
       },
       select: {
         subgroup: true,
         student: {
           select: {
             class: true,
-            program: true,
-          },
-        },
-      },
+            program: true
+          }
+        }
+      }
     }
   );
 
@@ -30,8 +33,8 @@ const fetchGroupConsults = async (parent, args, context) => {
     where: {
       teacherId: args.teacherId,
       courseId: args.courseId,
-      year: args.year,
-    },
+      year: args.year
+    }
   });
 
   let consultsByGroups = new Map();
@@ -42,12 +45,14 @@ const fetchGroupConsults = async (parent, args, context) => {
     const value = {
       id: item.id,
       date: item.date,
-      hours: item.hours,
+      hours: item.hours
     };
 
-    if (consultsByGroups.has(key))
-	  {consultsByGroups.set(key, [...consultsByGroups.get(key), value]);}
-	  else {consultsByGroups.set(key, [value]);}
+    if (consultsByGroups.has(key)) {
+      consultsByGroups.set(key, [...consultsByGroups.get(key), value]);
+    } else {
+      consultsByGroups.set(key, [value]);
+    }
   });
 
   return Array.from(availableGroups).map((group) => {
@@ -63,22 +68,25 @@ const fetchConsults = async (parent, args, context) => {
     where: {
       teacherId: args.teacherId,
       courseId: args.courseId,
+      FreezeVersion: args.year ? {
+        year: args.year
+      } : null
     },
     include: {
       consult: {
         orderBy: {
-          date: "asc",
+          date: "asc"
         },
         where: {
-          year: args.year,
-        },
+          year: args.year
+        }
       },
-      student: true,
-    },
+      student: true
+    }
   });
 };
 
 module.exports = {
   fetchConsults,
   fetchGroupConsults
-}
+};

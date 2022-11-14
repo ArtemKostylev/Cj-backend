@@ -1,17 +1,20 @@
 const fetchTeachers = async (_, args, context) => {
   const { userId } = context;
   return await context.prisma.teacher.findMany({
+    where: {
+      FreezeVersion: null
+    },
     include: {
       relations: {
-        distinct: ['courseId'],
+        distinct: ["courseId"],
         select: {
-          course: true,
-        },
-      },
-    },
+          course: true
+        }
+      }
+    }
   });
 };
 
 module.exports = {
-  fetchTeachers,
+  fetchTeachers
 };

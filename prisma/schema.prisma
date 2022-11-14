@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -8,17 +5,16 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialActions", "selectRelationCount"]
-
+  previewFeatures = ["referentialActions", "selectRelationCount", "interactiveTransactions"]
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  login    String   @unique
+  id       Int       @id @default(autoincrement())
+  login    String    @unique
   password String
-  role     Role     @relation(fields: [roleId], references: [id])
+  role     Role      @relation(fields: [roleId], references: [id])
   roleId   Int
-  teacher  Teacher?
+  teacher  Teacher[]
 }
 
 model Role {
@@ -27,19 +23,23 @@ model Role {
   users User[]
 }
 
+// TODO: This table need PTA
 model Teacher {
-  id           Int                      @id @default(autoincrement())
-  name         String?
-  surname      String?
-  parent       String?
-  user         User?                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int?                     @unique
-  relations    Teacher_Course_Student[]
-  Note         Note[]
-  GroupConsult GroupConsult[]
-  courseHours  CourseHours[]
+  id              Int                      @id @default(autoincrement())
+  name            String?
+  surname         String?
+  parent          String?
+  user            User?                    @relation(fields: [userId], references: [id])
+  userId          Int?
+  relations       Teacher_Course_Student[]
+  Note            Note[]
+  GroupConsult    GroupConsult[]
+  courseHours     CourseHours[]
+  FreezeVersion   FreezeVersion?           @relation(fields: [freezeVersionId], references: [id])
+  freezeVersionId Int?
 }
 
+// TODO: This table need PTA
 model Course {
   id                Int                      @id @default(autoincrement())
   name              String?
@@ -54,9 +54,10 @@ model Course {
   parentId          Int?                     @unique
   child             Course?                  @relation("Reference course")
   courseHours       CourseHours[]
+  FreezeVersion     FreezeVersion?           @relation(fields: [freezeVersionId], references: [id])
+  freezeVersionId   Int?
 }
 
-// This model keeps hours pasted by sup to students
 model CourseHours {
   id        Int      @id @default(autoincrement())
   course    Course?  @relation(fields: [courseId], references: [id])
@@ -70,6 +71,7 @@ model CourseHours {
   hours     Float
 }
 
+// TODO: This table need PTA
 model Student {
   id               Int                      @id @default(autoincrement())
   name             String?
@@ -79,21 +81,26 @@ model Student {
   relations        Teacher_Course_Student[]
   specialization   Specialization?          @relation(fields: [specializationId], references: [id])
   specializationId Int?
+  FreezeVersion    FreezeVersion?           @relation(fields: [freezeVersionId], references: [id])
+  freezeVersionId  Int?
 }
 
+// TODO: This table need PTA
 model Teacher_Course_Student {
-  id           Int            @id @default(autoincrement())
-  teacher      Teacher        @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  teacherId    Int
-  student      Student?       @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId    Int?
-  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId     Int
-  archived     Boolean        @default(false)
-  subgroup     Int?
-  consult      Consult[]
-  journalEntry JournalEntry[]
-  quaterMark   QuaterMark[]
+  id              Int            @id @default(autoincrement())
+  teacher         Teacher        @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId       Int
+  student         Student?       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId       Int?
+  course          Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId        Int
+  archived        Boolean        @default(false)
+  subgroup        Int?
+  consult         Consult[]
+  journalEntry    JournalEntry[]
+  quaterMark      QuaterMark[]
+  FreezeVersion   FreezeVersion? @relation(fields: [freezeVersionId], references: [id])
+  freezeVersionId Int?
 }
 
 model JournalEntry {
@@ -162,10 +169,24 @@ model Load {
   hours   Int
 }
 
+// TODO: This table need PTA
 model Specialization {
-  id      Int       @id @default(autoincrement())
-  name    String
-  Student Student[]
+  id              Int            @id @default(autoincrement())
+  name            String
+  Student         Student[]
+  FreezeVersion   FreezeVersion? @relation(fields: [freezeVersionId], references: [id])
+  freezeVersionId Int?
+}
+
+model FreezeVersion {
+  id                     Int                      @id @default(autoincrement())
+  version                Int                      @default(autoincrement())
+  year                   Int
+  Teacher                Teacher[]
+  Course                 Course[]
+  Student                Student[]
+  Teacher_Course_Student Teacher_Course_Student[]
+  Specialization         Specialization[]
 }
 
 enum Period {

@@ -1,0 +1,9 @@
+type FreezeVersion {
+    id: Int!
+    version: Int!
+    year: Int!
+}
+
+extend type Query {
+    fetchFreezeVersions: [FreezeVersion!]!
+}

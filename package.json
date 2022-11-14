@@ -2,9 +2,9 @@
   "name": "cj-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "npx ts-node src/index.ts",
     "preinstall": "npx npm-force-resolutions"
   },
   "keywords": [],
@@ -24,6 +24,7 @@
     "@prisma/client": "^2.27.0-dev.57",
     "apollo-server-express": "^3.1.2",
     "bcryptjs": "^2.4.3",
+    "copyfiles": "^2.4.1",
     "docx": "^6.0.3",
     "express": "^4.17.1",
     "forever": "^4.0.1",
@@ -39,7 +40,7 @@
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
     "nodemon": "^2.0.7",
-    "prisma": "^2.27.0-dev.57"
+    "prisma": "^4.3.1"
   },
   "resolutions": {
     "apollo-server/apollo-server-core/graphql-upload/fs-capacitor": "^6.2.0",

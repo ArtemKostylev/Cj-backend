@@ -1,30 +1,48 @@
-const fs = require('fs');
-const htmlDocx = require('html-docx-js');
-const { buildHtml } = require('../../helpers/htmlBuilder');
+const fs = require("fs");
+const htmlDocx = require("html-docx-js");
+const { buildHtml } = require("../../helpers/htmlBuilder");
 
 const fetchFullInfo = async (parent, args, context) => {
   const { userId } = context;
-  const teachers = await context.prisma.teacher.findMany();
-  const students = await context.prisma.student.findMany({
-    include: {
-      specialization: true,
-    },
+  const teachers = await context.prisma.teacher.findMany({
+    where: {
+      FreezeVersion: null
+    }
   });
-  const courses = await context.prisma.course.findMany();
-  const specializations = await context.prisma.specialization.findMany();
+  const students = await context.prisma.student.findMany({
+    where: {
+      FreezeVersion: null
+    },
+    include: {
+      specialization: true
+    }
+  });
+  const courses = await context.prisma.course.findMany({
+    where: {
+      FreezeVersion: null
+    }
+  });
+  const specializations = await context.prisma.specialization.findMany({
+    where: {
+      FreezeVersion: null
+    }
+  });
   const relations = await context.prisma.teacher_Course_Student.findMany({
+    where: {
+      FreezeVersion: null
+    },
     include: {
       teacher: true,
       student: true,
-      course: true,
-    },
+      course: true
+    }
   });
   return {
     teachers,
     students,
     courses,
     relations,
-    specializations,
+    specializations
   };
 };
 
@@ -33,22 +51,23 @@ const fetchAnnualReport = async (parent, args, context) => {
     where: {
       archived: false,
       course: {
-        excludeFromReport: false,
+        excludeFromReport: false
       },
+      FreezeVersion: null
     },
     select: {
       quaterMark: {
         where: {
-          year: args.year,
-        },
+          year: args.year
+        }
       },
       student: {
         include: {
-          specialization: true,
-        },
+          specialization: true
+        }
       },
-      course: true,
-    },
+      course: true
+    }
   });
 
   const mappedData = new Map();
@@ -56,7 +75,7 @@ const fetchAnnualReport = async (parent, args, context) => {
   data.forEach((item) => {
     const key = `${item.student.class}/${
       item.student.specialization?.name || null
-    }/${item.student.program === 'OP' ? 'OP' : 'PP'}`;
+    }/${item.student.program === "OP" ? "OP" : "PP"}`;
 
     mappedData.set(
       key,
@@ -71,7 +90,7 @@ const fetchAnnualReport = async (parent, args, context) => {
 
     courses = Array.from(courses, ([name, value]) => ({
       id: name,
-      name: value,
+      name: value
     }));
 
     const studentMarks = new Map();
@@ -82,9 +101,9 @@ const fetchAnnualReport = async (parent, args, context) => {
         key,
         studentMarks.get(key)
           ? [
-              ...studentMarks.get(key),
-              { courseId: it.course.id, marks: it.quaterMark },
-            ]
+            ...studentMarks.get(key),
+            { courseId: it.course.id, marks: it.quaterMark }
+          ]
           : [{ courseId: it.course.id, marks: it.quaterMark }]
       );
     });
@@ -94,7 +113,12 @@ const fetchAnnualReport = async (parent, args, context) => {
 
   const doc = buildHtml(mappedData);
 
-  const docx = htmlDocx.asBlob(doc, { orientation: 'landscape' });
+  await fs.writeFile("vedomost.html", doc, function(err) {
+    if (err) throw err;
+    console.log("HTML builded");
+  });
+
+  /*   const docx = htmlDocx.asBlob(doc, { orientation: 'landscape' });
 
   fs.writeFile(
     `/var/www/files/vedomost_${args.year}.docx`,
@@ -104,10 +128,10 @@ const fetchAnnualReport = async (parent, args, context) => {
     }
   );
 
-  return `https://akostylev.com/files/vedomost_${args.year}.docx`;
+  return `https://akostylev.com/files/vedomost_${args.year}.docx`; */
 };
 
 module.exports = {
   fetchFullInfo,
-  fetchAnnualReport,
+  fetchAnnualReport
 };

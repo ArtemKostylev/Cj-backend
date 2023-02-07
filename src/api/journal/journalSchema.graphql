@@ -1,41 +1,58 @@
-type Teacher_Course_Student {
-    id: Int!
-    teacher: Teacher!
-    course: Course!
-    student: Student
-    subgroup: Int
-    journalEntry: [JournalEntry]
-    quaterMark: [QuaterMark]
-    consult: [Consult]
-    hours: Int
-    archived: Boolean
-    freezeVersion: FreezeVersion
+type IndividualJournalEntry {
+    studentName: String
+    studentClass: String
+    marks: [Mark]
+    quarterMarks: [QuarterMark]
 }
 
-type JournalEntry {
-    id: Int!
-    mark: String!
-    date: Date!
-    relation: Teacher_Course_Student
-    replacement: Replacement
+type Mark {
+    id: Int
+    date: Date
+    value: String
 }
 
-type QuaterMark {
-    id: Int!
-    mark: String!
-    period: String!
-    relation: Teacher_Course_Student
-    year: Int
+type QuarterMark {
+    id: Int
+    period: String
+    value: String
+}
+
+type DatesRecord {
+    month: String,
+    dates: [Date]
+}
+
+type MarksByMonth {
+    month: String,
+    marks: [Mark]
+}
+
+type GroupJournalStudentRecord {
+    studentName: String
+    marksByMonth: [MarksByMonth]
+    quarterMarks: [QuarterMark]
+}
+
+type GroupJournalEntry {
+    subgroup: String
+    months: [DatesRecord]
+    students: [GroupJournalStudentRecord]
 }
 
 extend type Query {
-    fetchJournal(
-        teacherId: Int!
-        courseId: Int!
+    fetchIndividualJournal(
+        course: Int!
         year: Int!
-        date_gte: Date
-        date_lte: Date
-    ): [Teacher_Course_Student]
+        dateGte: Date!
+        dateLte: Date!
+    ): [IndividualJournalEntry]
+    fetchGroupJournal(
+        course: Int!
+        year: Int!
+        period: Int!
+        dateGte: Date!
+        dateLte: Date!
+    ): [GroupJournalEntry]
     fetchTeacherStudents(teacherId: Int!, year: Int!): [Student]
 }
 

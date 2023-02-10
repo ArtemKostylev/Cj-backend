@@ -10,12 +10,9 @@ import express, {Request} from 'express';
 
 export type Context = {
   user: User;
-  prisma: PrismaClient;
 }
 
 async function startApolloServer() {
-  const prisma = new PrismaClient();
-
   const {typeDefs, resolvers} = createApolloServerProps();
   const server = new ApolloServer({
     schema: makeExecutableSchema({typeDefs, resolvers}),
@@ -24,8 +21,7 @@ async function startApolloServer() {
     },
     context: async ({req}: { req: Request }) => {
       return {
-        prisma,
-        user: await getUserInfo(req, prisma),
+        user: await getUserInfo(req),
       };
     },
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],

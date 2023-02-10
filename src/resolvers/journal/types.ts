@@ -12,6 +12,7 @@ export interface QuarterMark extends Omit<Mark, 'date'> {
 }
 
 export interface IndividualJournalEntry {
+  id: number;
   studentName: string;
   studentClass: string;
   marks: Mark[];
@@ -21,6 +22,7 @@ export interface IndividualJournalEntry {
 export interface Group {
   dates: Record<Month, Set<Date>>
   students: {
+    id: number;
     studentName: string;
     marks: Record<Month, Mark[]>;
     quarterMarks: QuarterMark[];
@@ -34,6 +36,7 @@ export interface GroupJournalEntry {
     dates: Date[]
   }[]
   students: {
+    id: number;
     studentName: string;
     marksByMonth: {
       month: string;
@@ -61,4 +64,8 @@ export interface FetchGroupJournalPayload {
 
 export interface FetchTeacherStudentsPayload {
   year: number;
+}
+
+export interface MarkInput extends Mark {
+  relationId: number;
 }

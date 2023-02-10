@@ -41,7 +41,7 @@ const resolvers = merge(
     }
 );
 
-const typesArray = loadFilesSync(path.join(__dirname, '.'), {
+const typesArray = loadFilesSync(path.join(__dirname, '/schema'), {
     recursive: true,
     extensions: ['graphql'],
 });

@@ -19,3 +19,6 @@ extend type Mutation {
     signUp(login: String!, password: String!, roleId: Int!): AuthPayload
     signIn(login: String!, password: String!): AuthPayload
 }
+extend type Query {
+    updateUserInfo(token: String): AuthPayload
+}

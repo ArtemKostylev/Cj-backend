@@ -61,5 +61,5 @@ const signIn = async (parent, args, context, _) => {
 
 module.exports = {
     signUp,
-    signIn,
+    signIn
 };

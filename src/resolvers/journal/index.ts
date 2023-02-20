@@ -1,8 +1,10 @@
 import {fetchTeacherStudents} from './queries/fetchTeacherStudents';
 import {fetchIndividualJournal} from './queries/fetchIndividualJournal';
 import {fetchGroupJournal} from './queries/fetchGroupJpurnal';
-
-const Mutation = require('./journalMutations');
+import {updateMark} from './mutations/updateMark';
+import {updateQuarterMark} from './mutations/updateQuarterMark';
+import {removeMark} from './mutations/removeMark';
+import {removeQuarterMark} from './mutations/removeQuarterMark';
 
 module.exports = {
   resolvers: {
@@ -10,6 +12,12 @@ module.exports = {
       fetchIndividualJournal,
       fetchTeacherStudents,
       fetchGroupJournal
-    }, Mutation
+    },
+    Mutation: {
+      updateMark,
+      updateQuarterMark,
+      removeMark,
+      removeQuarterMark
+    }
   }
 };

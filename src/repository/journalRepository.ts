@@ -58,28 +58,45 @@ export const getTeacherStudents = async (userId: number, freezeVersionId: number
   distinct: ['id']
 });
 
-export const upsertMark = (id: number, relationId: number, value: string, date: Date) => prisma.teacher_Course_Student.update({
+export const upsertMark = (id: number, relationId: number, value: string, date: Date) => prisma.journalEntry.upsert({
   where: {
-    id: relationId
+    id
   },
-  data: {
-    journalEntry: {
-      upsert: {
-        where: {
-          id
-        },
-        update: {
-          mark: value,
-          date: date
-        },
-        create: {
-          mark: value,
-          date: date
-        }
-      }
-    }
+  update: {
+    mark: value,
+    date: date
   },
-  include: {
-    journalEntry: true
+  create: {
+    mark: value,
+    date: date,
+    relationId
+  }
+})
+
+export const upsertQuarterMark = (id: number, relationId: number, value: string, period: Quarter, year: number) => prisma.quaterMark.upsert({
+  where: {
+    id
+  },
+  update: {
+    mark: value,
+    period
+  },
+  create: {
+    mark: value,
+    period,
+    relationId,
+    year
+  }
+})
+
+export const deleteMark = (id: number) => prisma.journalEntry.delete({
+  where: {
+    id
+  }
+})
+
+export const deleteQuarterMark = (id: number) => prisma.quaterMark.delete({
+  where: {
+    id
   }
 })

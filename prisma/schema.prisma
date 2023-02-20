@@ -131,7 +131,7 @@ model QuaterMark {
 model Replacement {
   id           Int          @id @default(autoincrement())
   date         DateTime
-  journalEntry JournalEntry @relation(fields: [entryId], references: [id])
+  journalEntry JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   entryId      Int          @unique
   deleted      Boolean      @default(false)
 }

@@ -63,36 +63,15 @@ extend type Mutation {
         id: Int!
         date: Date!
         value: String!
-        relationId: Int
+        relationId: Int!
     ): Mark
-    updateJournal(data: JournalUpdateInput): Boolean
-}
-
-input Teacher_Course_StudentInput {
-    id: Int
-    teacherId: Int
-    courseId: Int
-    studentId: Int
-}
-
-input JournalEntryInput {
-    id: Int
-    mark: String!
-    date: Date!
-    relationId: Int!
-}
-
-input QuaterMarkInput {
-    id: Int
-    mark: String!
-    period: String!
-    relationId: Int!
-    year: Int
-}
-
-input JournalUpdateInput {
-    updateCasual: [JournalEntryInput]
-    updatePeriod: [QuaterMarkInput]
-    deleteCasual: [Int]
-    deletePeriod: [Int]
+    updateQuarterMark(
+        id: Int!
+        period: String!
+        value: String!
+        relationId: Int!
+        year: Int!
+    ): QuarterMark
+    removeMark(id: Int): Mark
+    removeQuarterMark(id: Int): QuarterMark
 }
